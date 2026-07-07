@@ -2,6 +2,11 @@ export const DefaultBoard: Partial<JXG.BoardAttributes> = {
    boundingBox: [-1, 5, 5, -1],
    axis: true
 }
+export const DefaultPoint: JXG.PointAttributes = {
+   size: 1,
+   color: "red",
+   snapToGrid: true,
+}
 export const PointNoTitle: JXG.PointAttributes = {
    size: 1,
    snapToGrid: true,

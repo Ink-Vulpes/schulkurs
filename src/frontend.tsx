@@ -10,6 +10,8 @@ import { createRoot } from "react-dom/client";
 import { App } from "./App";
 import 'katex/dist/katex.min.css'
 
+// const opal_stylesheet = document.querySelector("link[href*=\"content.css\"");
+
 
 const elem = document.getElementById("root")!;
 const app = (
