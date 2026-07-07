@@ -1,4 +1,4 @@
-import type { Point } from "jsxgraph";
+import { Board, Point, type Arrow } from "jsxgraph";
 
 export type Vec2D = [number, number];
 export function v2d_amount(v: Vec2D): number {
@@ -15,4 +15,7 @@ export function v2d_diff(v1: Vec2D, v2: Vec2D): Vec2D {
 }
 export function point_to_v2d(point: Point): Vec2D {
    return [point.X(), point.Y()]
+}
+export function arrow_to_vec2d(arrow: Arrow): Vec2D {
+   return v2d_diff(point_to_v2d(arrow.point2), point_to_v2d(arrow.point1));
 }

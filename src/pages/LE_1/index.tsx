@@ -4,24 +4,16 @@ import ReactMarkdown from 'react-markdown';
 import { useEffect, useState } from "react";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
-import { point_to_v2d, type Vec2D } from "@/utils/math";
+import { arrow_to_vec2d, point_to_v2d, v2d_add, v2d_diff, v2d_not, type Vec2D } from "@/utils/math";
+import { ArrowColorRed, ArrowWithLabel, DefaultBoard, PointNoTitle } from "@/utils/jsxGraphConfigs";
 
 export default function LE_1() {
    const [pa_pos, set_pa_pos] = useState<Vec2D>([1, 1]);
    const [pb_pos, set_pb_pos] = useState<Vec2D>([3, 4]);
 
-   const [v1_data, set_v1] = useState<Vec2D>([1, 2]);
-
 
    useEffect(() => {
-      const board = JSXGraph.initBoard("box_1", {
-         boundingBox: [-1, 5, 5, -1],
-         axis: true
-      })
-      const board_2 = JSXGraph.initBoard("box_2", {
-         boundingBox: [-1, 5, 5, -1],
-         axis: true
-      })
+      const board = JSXGraph.initBoard("box_1", DefaultBoard)
 
       const pa = board.create(
          'point',
@@ -45,13 +37,6 @@ export default function LE_1() {
 
       board.create('arrow', [pa, pb])
 
-      const v1 = board_2.create("arrow", [[1, 1], [1 + v1_data[0], 1 + v1_data[1]]], {
-         fixed: true,
-         title: "v"
-      });
-      const v2 = board_2.create("arrow", [[2 + v1_data[0], 1 + v1_data[1]], [2, 1]], {
-         fixed: true
-      });
 
       board.on("update", (e) => {
          const new_pa_pos: Vec2D = point_to_v2d(pa);
@@ -60,6 +45,34 @@ export default function LE_1() {
          if (new_pb_pos != pa_pos) set_pb_pos(new_pb_pos);
       })
 
+   }, [])
+
+   useEffect(() => {
+      const board = JSXGraph.initBoard("box_2", DefaultBoard)
+
+      const p1 = board.create("point", [2, 2], PointNoTitle);
+      const p2 = board.create("point", [4, 4], PointNoTitle);
+
+      const a1 = board.create("arrow", [p1, p2], {
+         name: "v",
+         ...ArrowWithLabel,
+      });
+
+      const p3 = board.create("point", v2d_add(v2d_not(arrow_to_vec2d(a1)), point_to_v2d(p1)), {
+         visible: false
+      });
+      const a2 = board.create("arrow", [p1, p3], {
+         name: "!v",
+         ...ArrowWithLabel,
+         ...ArrowColorRed
+      })
+
+      const drag_event = () => {
+         p3.moveTo(v2d_add(v2d_not(arrow_to_vec2d(a1)), point_to_v2d(p1)));
+      };
+
+      p1.on("drag", drag_event);
+      p2.on("drag", drag_event);
    }, [])
 
    const vec_ab_raw = `\\overrightarrow{AB}=\\begin{pmatrix}${pb_pos[0] - pa_pos[0]}\\\\${pb_pos[1] - pa_pos[1]}\\end{pmatrix}`;

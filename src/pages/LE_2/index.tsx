@@ -1,3 +1,4 @@
+import { ArrowColorRed, ArrowWithLabel, DefaultBoard, PointNoTitle } from "@/utils/jsxGraphConfigs";
 import { point_to_v2d, v2d_add, v2d_amount, v2d_diff, v2d_not, type Vec2D } from "@/utils/math";
 import { JSXGraph } from "jsxgraph";
 import { useEffect, useState } from "react";
@@ -13,54 +14,25 @@ export default function LE_2() {
    const [b_v, set_b_v] = useState<Vec2D>([2, 3]);
 
    useEffect(() => {
-      const board = JSXGraph.initBoard("box_1", {
-         boundingBox: [-1, 5, 5, -1],
-         axis: true
-      });
-      const end_p1 = board.create("point", add_v1, {
-         fillOpacity: 0,
-         strokeOpacity: 0,
-         snapToGrid: true,
-         withLabel: false
-      });
-      const end_p2 = board.create("point", v2d_add(add_v1, add_v2), {
-         fillOpacity: 0,
-         strokeOpacity: 0,
-         snapToGrid: true,
-         withLabel: false
-      });
+      const board = JSXGraph.initBoard("box_1", DefaultBoard);
+      const end_p1 = board.create("point", add_v1, PointNoTitle);
+      const end_p2 = board.create("point", v2d_add(add_v1, add_v2), PointNoTitle);
 
       board.create("arrow", [[0, 0], end_p1], {
+         name: "a",
          fixed: true,
-         name: 'a',
-         withLabel: true,
-         label: {
-            parse: false,
-            position: 'top',
-            offset: [10, 10]
-         }
+         ...ArrowWithLabel
       });
       board.create("arrow", [end_p1, end_p2], {
+         name: "b",
          fixed: true,
-         name: 'b',
-         withLabel: true,
-         label: {
-            parse: false,
-            position: 'top',
-            offset: [10, 10]
-         }
+         ...ArrowWithLabel
       })
       board.create("arrow", [[0, 0], end_p2], {
-         fixed: true,
          name: 'a+b',
-         strokeColor: '#FF0000',
-         highlightStrokeColor: '#FF0000',
-         withLabel: true,
-         label: {
-            parse: false,
-            position: 'top',
-            offset: [10, 10]
-         }
+         fixed: true,
+         ...ArrowColorRed,
+         ...ArrowWithLabel,
       })
       board.on("update", (e) => {
          const new_end_p1 = point_to_v2d(end_p1);
@@ -70,53 +42,24 @@ export default function LE_2() {
       })
    }, []);
    useEffect(() => {
-      const board = JSXGraph.initBoard("box_2", {
-         boundingBox: [-1, 5, 5, -1],
-         axis: true
-      });
-      const end_p1 = board.create("point", diff_v1, {
-         fillOpacity: 0,
-         strokeOpacity: 0,
-         snapToGrid: true,
-         withLabel: false
-      });
-      const end_p2 = board.create("point", v2d_diff(diff_v1, diff_v2), {
-         fillOpacity: 0,
-         strokeOpacity: 0,
-         snapToGrid: true,
-         withLabel: false
-      });
+      const board = JSXGraph.initBoard("box_2", DefaultBoard);
+      const end_p1 = board.create("point", diff_v1, PointNoTitle);
+      const end_p2 = board.create("point", v2d_diff(diff_v1, diff_v2), PointNoTitle);
       board.create("arrow", [[0, 0], end_p1], {
          fixed: true,
          name: 'a',
-         withLabel: true,
-         label: {
-            parse: false,
-            position: 'top',
-            offset: [10, 10]
-         }
+         ...ArrowWithLabel,
       });
       board.create("arrow", [end_p2, end_p1], {
          fixed: true,
          name: 'b',
-         withLabel: true,
-         label: {
-            parse: false,
-            position: 'top',
-            offset: [10, 10]
-         }
+         ...ArrowWithLabel,
       })
       board.create("arrow", [[0, 0], end_p2], {
          fixed: true,
          name: 'a-b',
-         strokeColor: '#FF0000',
-         highlightStrokeColor: '#FF0000',
-         withLabel: true,
-         label: {
-            parse: false,
-            position: 'top',
-            offset: [10, 10]
-         }
+         ...ArrowColorRed,
+         ...ArrowWithLabel
       })
       board.on("update", (e) => {
          const new_end_p1 = point_to_v2d(end_p1);
@@ -126,25 +69,12 @@ export default function LE_2() {
       })
    }, [])
    useEffect(() => {
-      const board = JSXGraph.initBoard("box_3", {
-         boundingBox: [-1, 5, 5, -1],
-         axis: true
-      });
-      const end_p = board.create("point", b_v, {
-         fillOpacity: 0,
-         strokeOpacity: 0,
-         snapToGrid: true,
-         withLabel: false
-      })
+      const board = JSXGraph.initBoard("box_3", DefaultBoard);
+      const end_p = board.create("point", b_v, PointNoTitle)
       board.create("arrow", [[0, 0], end_p], {
          fixed: true,
          name: 'v',
-         withLabel: true,
-         label: {
-            parse: false,
-            position: 'top',
-            offset: [10, 10]
-         }
+         ...ArrowWithLabel
       });
       board.on("update", (e) => {
          const new_end_p = point_to_v2d(end_p);
