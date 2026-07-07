@@ -18,6 +18,7 @@ export const ArrowWithLabel: Record<string, unknown> = {
    withLabel: true,
    label: {
       parse: false,
+      useMathJax: true,
       position: 'top',
       offset: [10, 10]
    }

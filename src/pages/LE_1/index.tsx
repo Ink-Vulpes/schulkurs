@@ -18,13 +18,15 @@ export default function LE_1() {
       const p1 = board.create('point', pa_pos, DefaultPoint);
       const p2 = board.create('point', pb_pos, DefaultPoint);
 
-      const a1 = board.create('arrow', [p1, p2]);
+      const a1 = board.create('arrow', [p1, p2], {
+         name: "\\(\\overrightarrow{AB}\\)",
+         ...ArrowWithLabel
+      });
       const vf1 = board.create('vectorfield', [
          arrow_to_vec2d(a1),
          [0, 4, 5],
          [0, 4, 5]
       ]) as any;
-
 
       const update_fn1 = () => {
          const new_pa_pos: Vec2D = point_to_v2d(p1);
@@ -51,15 +53,15 @@ export default function LE_1() {
       const p2 = board.create("point", [3, 3], PointNoTitle);
 
       const a1 = board.create("arrow", [p1, p2], {
-         name: "v",
+         name: "\\(\\vec{v}\\)",
          ...ArrowWithLabel,
       });
 
       const p3 = board.create("point", v2d_add(v2d_not(arrow_to_vec2d(a1)), point_to_v2d(p1)), {
          visible: false
       });
-      const a2 = board.create("arrow", [p1, p3], {
-         name: "!v",
+      board.create("arrow", [p1, p3], {
+         name: "\\(-\\vec{v}\\)",
          ...ArrowWithLabel,
          ...ArrowColorRed
       })

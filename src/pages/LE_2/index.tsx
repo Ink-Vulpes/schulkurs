@@ -1,3 +1,4 @@
+import { vec_add_latex_string as vec_add_to_latex, vec_diff_latex_string as vec_diff_to_latex } from "@/utils/embed";
 import { ArrowColorRed, ArrowWithLabel, DefaultBoard, PointNoTitle } from "@/utils/jsxGraphConfigs";
 import { point_to_v2d, v2d_add, v2d_amount, v2d_diff, v2d_not, type Vec2D } from "@/utils/math";
 import { JSXGraph } from "jsxgraph";
@@ -19,17 +20,17 @@ export default function LE_2() {
       const end_p2 = board.create("point", v2d_add(add_v1, add_v2), PointNoTitle);
 
       board.create("arrow", [[0, 0], end_p1], {
-         name: "a",
+         name: "\\(\\vec{a}\\)",
          fixed: true,
          ...ArrowWithLabel
       });
       board.create("arrow", [end_p1, end_p2], {
-         name: "b",
+         name: "\\(\\vec{b}\\)",
          fixed: true,
          ...ArrowWithLabel
       })
       board.create("arrow", [[0, 0], end_p2], {
-         name: 'a+b',
+         name: "\\(\\vec{a}+\\vec{b}\\)",
          fixed: true,
          ...ArrowColorRed,
          ...ArrowWithLabel,
@@ -47,17 +48,17 @@ export default function LE_2() {
       const end_p2 = board.create("point", v2d_diff(diff_v1, diff_v2), PointNoTitle);
       board.create("arrow", [[0, 0], end_p1], {
          fixed: true,
-         name: 'a',
+         name: '\\(\\vec{a}\\)',
          ...ArrowWithLabel,
       });
       board.create("arrow", [end_p2, end_p1], {
          fixed: true,
-         name: 'b',
+         name: '\\(\\vec{b}\\)',
          ...ArrowWithLabel,
       })
       board.create("arrow", [[0, 0], end_p2], {
          fixed: true,
-         name: 'a-b',
+         name: '\\(\\vec{a}-\\vec{b}\\)',
          ...ArrowColorRed,
          ...ArrowWithLabel
       })
@@ -73,7 +74,7 @@ export default function LE_2() {
       const end_p = board.create("point", b_v, PointNoTitle)
       board.create("arrow", [[0, 0], end_p], {
          fixed: true,
-         name: 'v',
+         name: '\\(\\vec{v}\\)',
          ...ArrowWithLabel
       });
       board.on("update", (e) => {
@@ -98,10 +99,7 @@ export default function LE_2() {
                   Nun der neu entstandene Vektor zwischen den Startpunkt von $\\vec{a}$ zum Endpunkt des $\\vec{b}$ ist
                   die Summe der beiden Vektoren 
                   $ \\vec{a}+\\vec{b}=
-                     \\begin{pmatrix}
-                        ${add_v1[0]}+${add_v2[0]}\\\\
-                        ${add_v1[1]}+${add_v2[1]}
-                     \\end{pmatrix}=
+                     ${vec_add_to_latex(add_v1, add_v2)}
                      \\begin{pmatrix}
                         ${add_v1[0] + add_v2[0]}\\\\
                         ${add_v1[1] + add_v2[1]}
@@ -130,10 +128,8 @@ export default function LE_2() {
                   Nun der neue entstandene Vektor zwischen den Startpunkt von $\\vec{a}$ zum Startpunkt des $\\vec{b}$ ist
                   die Differenz der beiden Vektoren 
                   $ \\vec{a}-\\vec{b}=
-                     \\begin{pmatrix}
-                        ${diff_v1[0]}-${diff_v2[0]}\\\\
-                        ${diff_v1[1]}-${diff_v2[1]}
-                     \\end{pmatrix}=
+                        ${vec_diff_to_latex(diff_v1, diff_v2)}
+                     =
                      \\begin{pmatrix}
                         ${diff_v1[0] - diff_v2[0]}\\\\
                         ${diff_v1[1] - diff_v2[1]}
