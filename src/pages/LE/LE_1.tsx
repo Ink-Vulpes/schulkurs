@@ -4,7 +4,7 @@ import ReactMarkdown from 'react-markdown';
 import { useEffect, useState } from "react";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
-import { RelativPoint, Vector, vector_from_arrow, vector_from_point as vector_from_point } from "@/utils/math";
+import { RelativPoint, Vector, vector_from_arrow_2d, vector_from_point as vector_from_point } from "@/utils/math";
 import { ArrowColorRed, ArrowWithLabel, DefaultBoard, DefaultPoint, PointNoTitle } from "@/utils/jsxGraphConfigs";
 
 export default function LE_1() {
@@ -33,7 +33,7 @@ export default function LE_1() {
       const vf1 = b1_vec.add_vector_field_to_board(board);
 
       function vf1_update() {
-         vf1.setF(vector_from_arrow(arrow).v)
+         vf1.setF(vector_from_arrow_2d(arrow).v)
       }
 
       start_p.on("drag", vf1_update);
@@ -66,7 +66,7 @@ export default function LE_1() {
       })
 
       function v2_update() {
-         v2_end_p.moveTo(vector_from_point(start_p).diff(vector_from_arrow(v1_arrow)).v)
+         v2_end_p.moveTo(vector_from_point(start_p).diff(vector_from_arrow_2d(v1_arrow)).v)
       }
       start_p.on("drag", v2_update);
       v1_end_p.on("drag", v2_update);

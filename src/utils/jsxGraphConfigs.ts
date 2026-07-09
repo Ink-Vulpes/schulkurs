@@ -28,7 +28,17 @@ export const PointNoTitle: JXG.PointAttributes = {
    withLabel: false,
    color: "black",
 }
-export const DefaultArrow: JXG.ArrowAttributes = {
+export const PointNoTitle3D: JXG.PointAttributes = {
+   size: 2,
+   snapToGrid: true,
+   withLabel: false,
+   color: "black",
+}
+export const DefaultArrow3D: JXG.Line3DAttributes = {
+   strokeWidth: 2,
+   lastArrow: { type: 1 }
+}
+export const DefaultArrow2D: JXG.ArrowAttributes = {
    fixed: false,
 }
 export const ArrowWithLabel: Record<string, unknown> = {
