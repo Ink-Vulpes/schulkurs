@@ -1,4 +1,4 @@
-import { LETitleMap } from "@/pages/LE_Overlay";
+import { LETitleMap } from "@/pages/LE/LE_Overlay";
 import { create } from "zustand";
 
 type GlobalState = {

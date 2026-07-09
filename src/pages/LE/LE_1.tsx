@@ -4,77 +4,73 @@ import ReactMarkdown from 'react-markdown';
 import { useEffect, useState } from "react";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
-import { arrow_to_vec2d, point_to_v2d, v2d_add, v2d_not, type Vec2D } from "@/utils/math";
+import { RelativPoint, Vector, vector_from_arrow, vector_from_point as vector_from_point } from "@/utils/math";
 import { ArrowColorRed, ArrowWithLabel, DefaultBoard, DefaultPoint, PointNoTitle } from "@/utils/jsxGraphConfigs";
 
 export default function LE_1() {
-   const [pa_pos, set_pa_pos] = useState<Vec2D>([1, 1]);
-   const [pb_pos, set_pb_pos] = useState<Vec2D>([2, 3]);
+   const [b1_start_p, set_b1_start_p] = useState(new Vector<2>([1, 1]));
+   const [b1_vec, set_b1_vec] = useState(new Vector<2>([2, 3]));
+   const [b2_start_p, set_b2_start_p] = useState(new Vector<2>([2, 2]))
+   const [b2_vec, set_b2_vec] = useState(new Vector<2>([1, 2]))
 
 
    useEffect(() => {
       const board = JSXGraph.initBoard("box_1", DefaultBoard);
 
-      const p1 = board.create('point', pa_pos, DefaultPoint);
-      const p2 = board.create('point', pb_pos, DefaultPoint);
+      const { start_p: start_p, end_p: end_p, arrow: arrow } = b1_vec.add_to_board(board, {
+         relativ_p: [RelativPoint.StartPoint, b1_start_p],
+         point_conf: DefaultPoint,
+         arrow_conf: {
+            name: "\\(\\overrightarrow{AB}\\)",
+            ...ArrowWithLabel
+         },
+         update_state: {
+            set_start_p: set_b1_start_p,
+            set_vec: set_b1_vec
+         }
+      })
 
-      const a1 = board.create('arrow', [p1, p2], {
-         name: "\\(\\overrightarrow{AB}\\)",
-         ...ArrowWithLabel
-      });
-      const vf1 = board.create('vectorfield', [
-         arrow_to_vec2d(a1),
-         [0, 4, 5],
-         [0, 4, 5]
-      ]) as any;
+      const vf1 = b1_vec.add_vector_field_to_board(board);
 
-      const update_fn1 = () => {
-         const new_pa_pos: Vec2D = point_to_v2d(p1);
-         const new_pb_pos: Vec2D = point_to_v2d(p2);
-         if (new_pa_pos != pa_pos) set_pa_pos(new_pa_pos);
-         if (new_pb_pos != pa_pos) set_pb_pos(new_pb_pos);
+      function vf1_update() {
+         vf1.setF(vector_from_arrow(arrow).v)
       }
 
-      const update_fn2 = () => {
-         vf1.setF(arrow_to_vec2d(a1))
-         update_fn1()
-      }
-
-      p1.on("drag", update_fn2);
-      p2.on("drag", update_fn2);
-      a1.on("drag", update_fn1);
-
+      start_p.on("drag", vf1_update);
+      end_p.on("drag", vf1_update);
    }, [])
 
    useEffect(() => {
       const board = JSXGraph.initBoard("box_2", DefaultBoard)
-
-      const p1 = board.create("point", [2, 2], PointNoTitle);
-      const p2 = board.create("point", [3, 3], PointNoTitle);
-
-      const a1 = board.create("arrow", [p1, p2], {
-         name: "\\(\\vec{v}\\)",
-         ...ArrowWithLabel,
+      const { start_p: start_p, end_p: v1_end_p, arrow: v1_arrow } = b2_vec.add_to_board(board, {
+         relativ_p: [RelativPoint.StartPoint, b2_start_p],
+         arrow_conf: {
+            name: "\\(\\vec{v}\\)",
+            ...ArrowWithLabel
+         },
+         update_state: {
+            set_start_p: set_b2_start_p,
+            set_vec: set_b2_vec
+         }
       });
-
-      const p3 = board.create("point", v2d_add(v2d_not(arrow_to_vec2d(a1)), point_to_v2d(p1)), {
-         visible: false
-      });
-      board.create("arrow", [p1, p3], {
-         name: "\\(-\\vec{v}\\)",
-         ...ArrowWithLabel,
-         ...ArrowColorRed
+      const { end_p: v2_end_p } = b2_vec.not().add_to_board(board, {
+         arrow_conf: {
+            name: "\\(-\\vec{v}\\)",
+            ...ArrowWithLabel,
+            ...ArrowColorRed
+         },
+         point_conf: {
+            visible: false
+         },
+         relativ_p: [RelativPoint.StartPoint, start_p]
       })
 
-      const drag_event = () => {
-         p3.moveTo(v2d_add(v2d_not(arrow_to_vec2d(a1)), point_to_v2d(p1)));
-      };
-
-      p1.on("drag", drag_event);
-      p2.on("drag", drag_event);
+      function v2_update() {
+         v2_end_p.moveTo(vector_from_point(start_p).diff(vector_from_arrow(v1_arrow)).v)
+      }
+      start_p.on("drag", v2_update);
+      v1_end_p.on("drag", v2_update);
    }, [])
-
-   const vec_ab_raw = `\\overrightarrow{AB}=\\begin{pmatrix}${pb_pos[0] - pa_pos[0]}\\\\${pb_pos[1] - pa_pos[1]}\\end{pmatrix}`;
 
    return <div>
       <Callout type={CalloutTyp.DEF}>
@@ -91,13 +87,8 @@ export default function LE_1() {
                {
                   `Einfach gesagt, beschreibt ein Vektor die räumliche Beziehung zweier Punkte zueinander. Um diese Beziehung Grafisch darzustellen
                   nutzt man ein Pfeil. Bei der rechten Darstellung, beschreibt der Vektor
-                  \$${vec_ab_raw}\$
-                  die Beziehung zwischen den Punkten \$A(${pa_pos[0]}|${pa_pos[1]})\$ zu \$B(${pb_pos[0]}|${pb_pos[1]})\$.
-                  Es ist wichtig zu wissen, dass sich ein Vektor nur auf der Lagebeziehung der Punkte bezieht, nicht auf die Lage der Punkte allgemein.
-                  Was bedeutet, dass die Punkte beliebig liegen können, solange die Lagebeziehung gleich bleibt, bleibt auch der Vektor gleich.
-                  Um das zu zeigen, können sie die einer der Punkt in der Grafik verschieben, somit verändern sie auch die Lagebeziehung und damit auch
-                  den Vektor $\\overrightarrow{AB}$. Aber wenn sie nun den Vektor verschieben ändern sie nur die Lage der beiden Punkte, jedoch bleibt die
-                  Lagebeziehung der Punkt gleich und auch der Vektor.
+                  \$\\overrightarrow{AB}=${b1_vec.to_latex_vec()}\$
+                  die Beziehung zwischen den Punkten \$${b1_start_p.to_latex_point("A")}\$ zu \$${b1_start_p.add(b1_vec).to_latex_point("B")}\$.
                   `
                }
             </ReactMarkdown>
@@ -143,7 +134,9 @@ export default function LE_1() {
                rehypePlugins={[rehypeKatex]}
             >
                {
-                  `Sind zwei Vektoren gleich lang, parallel aber entgegengesetzt gerichtet, so heißen sie Gegenvektor.`
+                  `Sind zwei Vektoren gleich lang, parallel aber entgegengesetzt gerichtet, so heißen sie Gegenvektor. In der Grafik ist
+                  von den Vektor $\\vec{v}=${b2_vec.to_latex_vec()}$, Gegenvektor $-\\vec{v}=${b2_vec.not().to_latex_vec()}$.
+                  `
                }
             </ReactMarkdown>
          </div>

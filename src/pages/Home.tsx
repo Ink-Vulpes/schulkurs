@@ -7,6 +7,7 @@ export default function Home() {
       <div className="grid-cols-3 flex justify-center mt-4 space-x-2">
          <TopicTile title="Was ist ein Vektor?" color={Colors.BLUE} desc="Hier wird erläutert was ein Vektor ist." LE={1} />
          <TopicTile title="Rechnen mit Vektoren. (1)" color={Colors.RED} desc="Hier werden die Grundlegenden Rechenoperationen mit Vektoren erläutert." LE={2} />
+         <TopicTile title={"Eine Gerade im dreidimensionalen Raum."} color={Colors.RED} desc={"Die Darstellung von Geraden im Raum."} LE={3} />
       </div>
    </>
 }
